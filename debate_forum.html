@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deer Park Debate Club Forum</title>
+    <style>
+        :root {
+            --primary-color: #4a1b2d;
+            --secondary-color: #8b5d83;
+            --accent-color: #d4a5c7;
+            --light-color: #f4edf2;
+            --dark-color: #331425;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            margin: 0;
+        }
+        
+        .subtitle {
+            color: #ddd;
+            font-style: italic;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .create-topic {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .topics-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .topic {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: var(--light-color);
+        }
+        
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        
+        .topic-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        .topic-author {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .topic-content {
+            margin-bottom: 15px;
+        }
+        
+        .topic-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .replies {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        
+        .reply {
+            border-left: 3px solid var(--secondary-color);
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f5f5f5;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .reply-author {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .topic-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .reply-form {
+            margin-top: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .reply-button {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .reply-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-button {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .filter-button.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .notice {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .topic-header {
+                flex-direction: column;
+            }
+            
+            .filter-button {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Deer Park Debate Club Forum</h1>
+        <p class="subtitle">Practice critical thinking through respectful debate</p>
+    </header>
+    
+    <div class="container">
+        <div class="create-topic">
+            <h2>Start a New Debate Topic</h2>
+            <div id="new-topic-success" class="success">Topic posted successfully!</div>
+            <div id="new-topic-notice" class="notice">Please fill out all required fields.</div>
+            <div class="topic-form">
+                <div>
+                    <label for="username">Display Name (optional):</label>
+                    <input type="text" id="username" placeholder="Anonymous">
+                </div>
+                <div>
+                    <label for="topic-title">Topic Title:</label>
+                    <input type="text" id="topic-title" placeholder="Enter a clear, concise title" required>
+                </div>
+                <div>
+                    <label for="topic-content">Topic Description:</label>
+                    <textarea id="topic-content" rows="4" placeholder="Describe your debate topic. Try to present a balanced view." required></textarea>
+                </div>
+                <div>
+                    <label for="topic-category">Category:</label>
+                    <select id="topic-category" required>
+                        <option value="ethics">Ethics & Philosophy</option>
+                        <option value="politics">Politics & Policy</option>
+                        <option value="science">Science & Technology</option>
+                        <option value="education">Education</option>
+                        <option value="society">Society & Culture</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button id="post-topic-btn" type="button">Post Topic</button>
+            </div>
+        </div>
+        
+        <div class="topics-container">
+            <h2>Debate Topics</h2>
+            
+            <div class="filters">
+                <button class="filter-button active" data-filter="all">All Topics</button>
+                <button class="filter-button" data-filter="ethics">Ethics & Philosophy</button>
+                <button class="filter-button" data-filter="politics">Politics & Policy</button>
+                <button class="filter-button" data-filter="science">Science & Technology</button>
+                <button class="filter-button" data-filter="education">Education</button>
+                <button class="filter-button" data-filter="society">Society & Culture</button>
+                <button class="filter-button" data-filter="other">Other</button>
+            </div>
+            
+            <div id="topics-list">
+                <!-- Topics will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Deer Park Debate Club. All rights reserved.</p>
+        <p>This forum is designed for educational purposes and respectful debate.</p>
+    </footer>
+
+    <script>
+        // Sample data - initial topics
+        let debateTopics = [
+            {
+                id: 1,
+                title: "Should Social Media Be Regulated Like Public Utilities?",
+                content: "As social media platforms continue to dominate our communication landscape, should they be regulated like public utilities? These platforms now serve essential communication functions in society, but they're run by private companies with profit motives. Does this create conflicts of interest that harm the public good?",
+                author: "Moderator",
+                category: "politics",
+                date: "Apr 28, 2025",
+                replies: [
+                    {
+                        author: "DebateEnthusiast",
+                        content: "I believe regulation is necessary. These platforms have become too central to public discourse to remain unregulated. When a private company controls what is essentially the modern public square, there needs to be oversight.",
+                        date: "Apr 29, 2025"
+                    },
+                    {
+                        author: "FreeMarket42",
+                        content: "Disagree strongly. Government regulation would stifle innovation and potentially lead to censorship issues. The market will correct problems if users demand better practices.",
+                        date: "Apr 30, 2025"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Is AI Art Really Art?",
+                content: "With the rise of AI-generated images, music, and writing, we need to reconsider what constitutes 'art.' Does art require human intention, emotion, and experience? Or can something created by an algorithm based on patterns from human art still be considered legitimate art?",
+                author: "ArtPhilosopher",
+                category: "society",
+                date: "May 1, 2025",
+                replies: [
+                    {
+                        author: "TraditionalistView",
+                        content: "Art is fundamentally human expression. While AI can create interesting images, they lack the lived experience and emotional intent that gives art its depth and meaning.",
+                        date: "May 1, 2025"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Should High School Education Focus More on Practical Skills?",
+                content: "Many students graduate high school without basic financial literacy, home economics skills, or career preparation. Should schools reduce focus on traditional academic subjects to make room for more practical life skills?",
+                author: "EducationReformer",
+                category: "education",
+                date: "May 2, 2025",
+                replies: []
+            }
+        ];
+        
+        // Current filter
+        let currentFilter = 'all';
+        
+        // DOM elements
+        const topicsList = document.getElementById('topics-list');
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const postTopicBtn = document.getElementById('post-topic-btn');
+        const newTopicSuccess = document.getElementById('new-topic-success');
+        const newTopicNotice = document.getElementById('new-topic-notice');
+        
+        // Get current date in formatted string
+        function getCurrentDate() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const now = new Date();
+            return `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+        }
+        
+        // Capitalize first letter of a string
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Create a reply element
+        function createReplyElement(reply) {
+            const replyElement = document.createElement('div');
+            replyElement.className = 'reply';
+            
+            const replyAuthor = document.createElement('div');
+            replyAuthor.className = 'reply-author';
+            replyAuthor.textContent = `${reply.author} • ${reply.date}`;
+            
+            const replyContent = document.createElement('div');
+            replyContent.className = 'reply-content';
+            replyContent.textContent = reply.content;
+            
+            replyElement.appendChild(replyAuthor);
+            replyElement.appendChild(replyContent);
+            
+            return replyElement;
+        }
+        
+        // Add reply to a topic
+        function addReply(topicId, replyFormElement) {
+            const usernameInput = replyFormElement.querySelector('input[type="text"]');
+            const contentInput = replyFormElement.querySelector('textarea');
+            
+            const username = usernameInput.value.trim() || 'Anonymous';
+            const content = contentInput.value.trim();
+            
+            if (!content) {
+                // Show validation error
+                const noticeElement = replyFormElement.querySelector('.reply-notice');
+                if (noticeElement) {
+                    noticeElement.style.display = 'block';
+                    setTimeout(() => {
+                        noticeElement.style.display = 'none';
+                    }, 3000);
+                }
+                return;
+            }
+            
+            // Create new reply object
+            const newReply = {
+                author: username,
+                content: content,
+                date: getCurrentDate()
+            };
+            
+            // Find topic and add reply
+            const topicIndex = debateTopics.findIndex(topic => topic.id === topicId);
+            if (topicIndex !== -1) {
+                debateTopics[topicIndex].replies.push(newReply);
+                
+                // Clear form
+                usernameInput.value = '';
+                contentInput.value = '';
+                
+                // Hide form
+                replyFormElement.style.display = 'none';
+                
+                // Show success message
+                const successElement = replyFormElement.querySelector('.reply-success');
+                if (successElement) {
+                    successElement.style.display = 'block';
+                    setTimeout(() => {
+                        successElement.style.display = 'none';
+                    }, 3000);
+                }
+                
+                // Re-render the topics to update the UI
+                renderTopics();
+            }
+        }
+        
+        // Render all topics based on current filter
+        function renderTopics() {
+            // Clear existing topics
+            topicsList.innerHTML = '';
+            
+            // Filter topics if needed
+            const filteredTopics = currentFilter === 'all' 
+                ? debateTopics 
+                : debateTopics.filter(topic => topic.category === currentFilter);
+            
+            // Handle no topics case
+            if (filteredTopics.length === 0) {
+                topicsList.innerHTML = '<p>No topics in this category yet. Be the first to post one!</p>';
+                return;
+            }
+            
+            // Loop through topics and create elements
+            filteredTopics.forEach(topic => {
+                // Create main topic container
+                const topicElement = document.createElement('div');
+                topicElement.className = 'topic';
+                topicElement.dataset.id = topic.id;
+                topicElement.dataset.category = topic.category;
+                
+                // Create topic header
+                const topicHeader = document.createElement('div');
+                topicHeader.className = 'topic-header';
+                
+                const topicTitle = document.createElement('div');
+                topicTitle.className = 'topic-title';
+                topicTitle.textContent = topic.title;
+                
+                const topicAuthor = document.createElement('div');
+                topicAuthor.className = 'topic-author';
+                topicAuthor.textContent = `Posted by: ${topic.author} on ${topic.date}`;
+                
+                topicHeader.appendChild(topicTitle);
+                topicHeader.appendChild(topicAuthor);
+                
+                // Create topic content
+                const topicContent = document.createElement('div');
+                topicContent.className = 'topic-content';
+                topicContent.textContent = topic.content;
+                
+                // Create topic footer
+                const topicFooter = document.createElement('div');
+                topicFooter.className = 'topic-footer';
+                
+                const categorySpan = document.createElement('span');
+                categorySpan.textContent = `Category: ${capitalizeFirstLetter(topic.category)}`;
+                
+                const replyCount = document.createElement('span');
+                replyCount.textContent = `${topic.replies.length} ${topic.replies.length === 1 ? 'reply' : 'replies'}`;
+                
+                topicFooter.appendChild(categorySpan);
+                topicFooter.appendChild(replyCount);
+                
+                // Add reply button
+                const replyButton = document.createElement('button');
+                replyButton.className = 'reply-button';
+                replyButton.textContent = 'Reply';
+                replyButton.dataset.topicId = topic.id;
+                
+                // Create replies container
+                const repliesContainer = document.createElement('div');
+                repliesContainer.className = 'replies';
+                
+                // Add existing replies
+                topic.replies.forEach(reply => {
+                    const replyElement = createReplyElement(reply);
+                    repliesContainer.appendChild(replyElement);
+                });
+                
+                // Create reply form
+                const replyForm = document.createElement('div');
+                replyForm.className = 'reply-form';
+                replyForm.id = `reply-form-${topic.id}`;
+                
+                const replySuccess = document.createElement('div');
+                replySuccess.className = 'success reply-success';
+                replySuccess.textContent = 'Reply posted successfully!';
+                
+                const replyNotice = document.createElement('div');
+                replyNotice.className = 'notice reply-notice';
+                replyNotice.textContent = 'Please enter your reply.';
+                
+                const replyUsernameDiv = document.createElement('div');
+                const replyUsernameLabel = document.createElement('label');
+                replyUsernameLabel.textContent = 'Display Name (optional):';
+                replyUsernameLabel.setAttribute('for', `reply-username-${topic.id}`);
+                
+                const replyUsernameInput = document.createElement('input');
+                replyUsernameInput.type = 'text';
+                replyUsernameInput.id = `reply-username-${topic.id}`;
+                replyUsernameInput.placeholder = 'Anonymous';
+                
+                replyUsernameDiv.appendChild(replyUsernameLabel);
+                replyUsernameDiv.appendChild(replyUsernameInput);
+                
+                const replyContentDiv = document.createElement('div');
+                const replyContentLabel = document.createElement('label');
+                replyContentLabel.textContent = 'Your Response:';
+                replyContentLabel.setAttribute('for', `reply-content-${topic.id}`);
+                
+                const replyContentInput = document.createElement('textarea');
+                replyContentInput.id = `reply-content-${topic.id}`;
+                replyContentInput.rows = 3;
+                replyContentInput.required = true;
+                
+                replyContentDiv.appendChild(replyContentLabel);
+                replyContentDiv.appendChild(replyContentInput);
+                
+                const replySubmitButton = document.createElement('button');
+                replySubmitButton.type = 'button';
+                replySubmitButton.textContent = 'Post Reply';
+                replySubmitButton.dataset.topicId = topic.id;
+                
+                replyForm.appendChild(replySuccess);
+                replyForm.appendChild(replyNotice);
+                replyForm.appendChild(replyUsernameDiv);
+                replyForm.appendChild(replyContentDiv);
+                replyForm.appendChild(replySubmitButton);
+                
+                // Assemble topic element
+                topicElement.appendChild(topicHeader);
+                topicElement.appendChild(topicContent);
+                topicElement.appendChild(topicFooter);
+                topicElement.appendChild(replyButton);
+                topicElement.appendChild(repliesContainer);
+                topicElement.appendChild(replyForm);
+                
+                // Add to topics list
+                topicsList.appendChild(topicElement);
+                
+                // Add event listeners
+                replyButton.addEventListener('click', () => {
+                    const form = document.getElementById(`reply-form-${topic.id}`);
+                    form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+                });
+                
+                replySubmitButton.addEventListener('click', () => {
+                    addReply(topic.id, replyForm);
+                });
+            });
+        }
+        
+        // Post a new topic
+        function postNewTopic() {
+            const usernameInput = document.getElementById('username');
+            const titleInput = document.getElementById('topic-title');
+            const contentInput = document.getElementById('topic-content');
+            const categorySelect = document.getElementById('topic-category');
+            
+            const username = usernameInput.value.trim() || 'Anonymous';
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            const category = categorySelect.value;
+            
+            // Validate inputs
+            if (!title || !content) {
+                newTopicNotice.style.display = 'block';
+                setTimeout(() => {
+                    newTopicNotice.style.display = 'none';
+                }, 3000);
+                return;
+            }
+            
+            // Create new topic
+            const newTopic = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                author: username,
+                category: category,
+                date: getCurrentDate(),
+                replies: []
+            };
+            
+            // Add to topics array
+            debateTopics.unshift(newTopic);
+            
+            // Reset form
+            usernameInput.value = '';
+            titleInput.value = '';
+            contentInput.value = '';
+            
+            // Show success message
+            newTopicSuccess.style.display = 'block';
+            setTimeout(() => {
+                newTopicSuccess.style.display = 'none';
+            }, 3000);
+            
+            // Re-render topics
+            renderTopics();
+            
+            // Scroll to topics section
+            document.querySelector('.topics-container').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render initial topics
+            renderTopics();
+            
+            // Set up post topic button
+            postTopicBtn.addEventListener('click', postNewTopic);
+            
+            // Set up filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Update current filter
+                    currentFilter = button.dataset.filter;
+                    
+                    // Re-render topics
+                    renderTopics();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
